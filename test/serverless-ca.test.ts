@@ -3,7 +3,7 @@
 // import * as SimpleApp from '../lib/simple-app-stack';
 
 // example test. To run these tests, uncomment this file along with the
-// example resource in lib/serverless-ca-stack.ts
+// example resource in lib/init-config-stack.ts
 import test from "node:test";
 
 test('SQS Queue Created', () => {
