@@ -1,9 +1,4 @@
 import * as cdk from 'aws-cdk-lib';
-import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
-import * as custom from "aws-cdk-lib/custom-resources";
-import {generateBatch} from "../../shared/util";
-import {movieReviews} from "../../seed/movieReviews";
-
 import {Construct} from 'constructs';
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import {UserPool} from "aws-cdk-lib/aws-cognito";
@@ -13,33 +8,6 @@ import {AppApiStack} from "./app-api-stack";
 export class InitConfigStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
-
-        // Create the DynamoDB table
-        const movieReviewsTable = new dynamodb.Table(this, "MovieReviewsTable", {
-            billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-            partitionKey: {name: "MovieId", type: dynamodb.AttributeType.NUMBER},
-            sortKey: {name: "ReviewDate", type: dynamodb.AttributeType.STRING},
-            removalPolicy: cdk.RemovalPolicy.DESTROY,
-            tableName: "MovieReviews",
-        });
-
-        // Create the custom resource to initialize the data in batch
-        new custom.AwsCustomResource(this, "movieReviewsDbInitData", {
-            onCreate: {
-                service: "DynamoDB",
-                action: "batchWriteItem",
-                parameters: {
-                    RequestItems: {
-                        [movieReviewsTable.tableName]: generateBatch(movieReviews),
-                    },
-                },
-                physicalResourceId: custom.PhysicalResourceId.of("movieReviewsDbInitData"),
-            },
-            policy: custom.AwsCustomResourcePolicy.fromSdkCalls({
-                resources: [movieReviewsTable.tableArn],
-            }),
-        });
-
 
         // Add the Lambda layer
         const lambdaLayer = new lambda.LayerVersion(this, 'LambdaLayer', {
