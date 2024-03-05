@@ -22,7 +22,29 @@ export class AuthApiStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props: AuthApiProps) {
         super(scope, id , props);
 
+        ({userPoolId: this.userPoolId, userPoolClientId: this.userPoolClientId, lambdaLayer: this.lambdaLayer} = props);
 
+        // Add the Auth RestApi Configuration
+        const authApi = new apig.RestApi(this, "AuthServiceApi", {
+            description: "Authentication Service RestApi",
+            endpointTypes: [apig.EndpointType.REGIONAL],
+            defaultCorsPreflightOptions: {
+                allowOrigins: apig.Cors.ALL_ORIGINS,
+            },
+        });
+
+        // Root resource for the Auth RestApi
+        this.auth = authApi.root.addResource("auth");
+
+        this.addAuthRoute("signup", "POST", "SignupFn", "signup.ts");
+        this.addAuthRoute(
+            "confirm_signup",
+            "POST",
+            "ConfirmFn",
+            "confirm-signup.ts"
+        );
+        this.addAuthRoute("signout", "GET", "SignoutFn", "signout.ts");
+        this.addAuthRoute("signin", "POST", "SigninFn", "signin.ts");
     }
 
     private addAuthRoute(

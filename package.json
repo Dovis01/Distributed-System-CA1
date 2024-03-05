@@ -9,11 +9,13 @@
     "watch": "tsc -w",
     "schema": "typescript-json-schema --noExtraProps --required --refs false -o ./shared/types.schema.json  \"./shared/types.d.ts\" \"*\"",
     "cdk": "cdk",
-    "cdk-deploy": "cdk deploy",
-    "cdk-destroy": "cdk destroy"
+    "cdk-deploy-all": "cdk deploy --all",
+    "cdk-destroy-all": "cdk destroy InitConfigStack/AppApiStack --force && cdk destroy InitConfigStack/AuthApiStack --force && cdk destroy InitConfigStack --force"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.93",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/jwk-to-pem": "^2.0.3",
     "@types/node": "20.4.2",
     "aws-cdk": "2.88.0",
     "esbuild": "^0.18.17",
@@ -22,16 +24,16 @@
     "typescript-json-schema": "^0.59.0"
   },
   "dependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.354.0",
     "@aws-sdk/client-dynamodb": "^3.67.0",
     "@aws-sdk/lib-dynamodb": "^3.79.0",
     "@aws-sdk/util-dynamodb": "^3.303.0",
-    "aws-cdk-lib": "2.88.0",
-    "constructs": "^10.0.0",
-    "source-map-support": "^0.5.21",
-    "@aws-sdk/client-cognito-identity-provider": "^3.354.0",
     "ajv": "^8.12.0",
+    "aws-cdk-lib": "2.88.0",
     "axios": "^1.1.2",
+    "constructs": "^10.0.0",
     "jsonwebtoken": "^8.5.1",
-    "jwk-to-pem": "^2.0.5"
+    "jwk-to-pem": "^2.0.5",
+    "source-map-support": "^0.5.21"
   }
 }
