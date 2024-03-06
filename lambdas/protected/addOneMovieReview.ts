@@ -37,27 +37,28 @@ export const handler: APIGatewayProxyHandlerV2 = async (event, context) => {
             };
         }
 
-        const checkTheSameReviewerNameCommandOutput = await dynamoDbDocClient.send(
+        const checkTheSameReviewDateCommandOutput = await dynamoDbDocClient.send(
             new QueryCommand({
                 TableName: process.env.TABLE_NAME,
-                KeyConditionExpression: "MovieId = :movieId AND ReviewerName = :reviewerName",
+                IndexName: "ReviewDateIndex",
+                KeyConditionExpression: "MovieId = :movieId AND ReviewDate = :reviewDate",
                 ExpressionAttributeValues: {
                     ":movieId": body.MovieId,
-                    ":reviewerName": body.ReviewerName,
+                    ":reviewDate": body.ReviewDate,
                 },
             })
         );
 
-        console.log("GetCommand response: ", checkTheSameReviewerNameCommandOutput);
+        console.log("QueryCommand response: ", checkTheSameReviewDateCommandOutput);
 
         // @ts-ignore
-        if (checkTheSameReviewerNameCommandOutput.Items.length > 0) {
+        if (checkTheSameReviewDateCommandOutput.Items.length > 0) {
             return {
                 statusCode: 400,
                 headers: {
                     "content-type": "application/json",
                 },
-                body: JSON.stringify({Message: "The reviewer has reviewed this movie"}),
+                body: JSON.stringify({Message: "This movie has a review at this date"}),
             };
         }
 
