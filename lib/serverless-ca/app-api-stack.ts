@@ -110,12 +110,12 @@ export class AppApiStack extends cdk.Stack {
         const updateReviewTextEndpoint = protectedApiRootRes.addResource("{movieId}").addResource("reviews").addResource("{reviewerName}");
 
         // Add the protected lambda functions
-        const addOneMovieReviewFn = new node.NodejsFunction(this, "AddOneMovieReview", {
+        const addOneMovieReviewFn = new node.NodejsFunction(this, "AddOneMovieReviewFn", {
             ...appCommonFnProps,
             entry: "./lambdas/protected/addOneMovieReview.ts",
         });
 
-        const updateOneMovieReviewTextFn = new node.NodejsFunction(this, "UpdateOneMovieReviewText", {
+        const updateOneMovieReviewTextFn = new node.NodejsFunction(this, "UpdateOneMovieReviewTextFn", {
             ...appCommonFnProps,
             entry: "./lambdas/protected/updateOneMovieReviewText.ts",
         });
@@ -136,17 +136,18 @@ export class AppApiStack extends cdk.Stack {
         });
 
 
+
         // Add the public routes
         const publicApiRootRes = appApi.root.addResource("public");
         const moviesEndpoint = publicApiRootRes.addResource("movies");
 
         // This is the get all reviews of a specific movie route
-        const getAllReviewsOfOneMovieEndpoint = moviesEndpoint.addResource("{movieId}").addResource("reviews");
-        const getAllReviewsOfSpecificMovieFn = new node.NodejsFunction(this, "GetAllReviewsOfSpecificMovie", {
+        const getReviewsByMovieIdEndpoint = moviesEndpoint.addResource("{movieId}").addResource("reviews");
+        const getReviewsByMovieIdFn = new node.NodejsFunction(this, "GetReviewsByMovieIdFn", {
             ...appCommonFnProps,
-            entry: "./lambdas/public/getAllReviewsOfSpecificMovie.ts",
+            entry: "./lambdas/public/getReviewsByMovieId.ts",
         });
-        getAllReviewsOfOneMovieEndpoint.addMethod("GET", new apig.LambdaIntegration(getAllReviewsOfSpecificMovieFn));
-        movieReviewsTable.grantReadData(getAllReviewsOfSpecificMovieFn);
+        getReviewsByMovieIdEndpoint.addMethod("GET", new apig.LambdaIntegration(getReviewsByMovieIdFn));
+        movieReviewsTable.grantReadData(getReviewsByMovieIdFn);
     }
 }
