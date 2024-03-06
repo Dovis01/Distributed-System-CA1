@@ -149,5 +149,14 @@ export class AppApiStack extends cdk.Stack {
         });
         getReviewsByMovieIdEndpoint.addMethod("GET", new apig.LambdaIntegration(getReviewsByMovieIdFn));
         movieReviewsTable.grantReadData(getReviewsByMovieIdFn);
+
+        // This is the get review by movie id and reviewer name route
+        const getReviewByMovieIdAndReviewerNameEndpoint = getReviewsByMovieIdEndpoint.addResource("{reviewerName}");
+        const getReviewByMovieIdAndReviewerNameFn = new node.NodejsFunction(this, "GetReviewByMovieIdAndReviewerNameFn", {
+            ...appCommonFnProps,
+            entry: "./lambdas/public/getReviewByMovieIdAndReviewerName.ts",
+        });
+        getReviewByMovieIdAndReviewerNameEndpoint.addMethod("GET", new apig.LambdaIntegration(getReviewByMovieIdAndReviewerNameFn));
+        movieReviewsTable.grantReadData(getReviewByMovieIdAndReviewerNameFn);
     }
 }
