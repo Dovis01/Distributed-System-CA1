@@ -115,7 +115,7 @@ export class AppApiStack extends cdk.Stack {
             entry: "./lambdas/protected/addOneMovieReview.ts",
         });
 
-        const updateOneMovieReviewTextFn = new node.NodejsFunction(this, "updateOneMovieReviewText", {
+        const updateOneMovieReviewTextFn = new node.NodejsFunction(this, "UpdateOneMovieReviewText", {
             ...appCommonFnProps,
             entry: "./lambdas/protected/updateOneMovieReviewText.ts",
         });
@@ -135,5 +135,18 @@ export class AppApiStack extends cdk.Stack {
             authorizationType: apig.AuthorizationType.CUSTOM,
         });
 
+
+        // Add the public routes
+        const publicApiRootRes = appApi.root.addResource("public");
+        const moviesEndpoint = publicApiRootRes.addResource("movies");
+
+        // This is the get all reviews of a specific movie route
+        const getAllReviewsOfOneMovieEndpoint = moviesEndpoint.addResource("{movieId}").addResource("reviews");
+        const getAllReviewsOfSpecificMovieFn = new node.NodejsFunction(this, "GetAllReviewsOfSpecificMovie", {
+            ...appCommonFnProps,
+            entry: "./lambdas/public/getAllReviewsOfSpecificMovie.ts",
+        });
+        getAllReviewsOfOneMovieEndpoint.addMethod("GET", new apig.LambdaIntegration(getAllReviewsOfSpecificMovieFn));
+        movieReviewsTable.grantReadData(getAllReviewsOfSpecificMovieFn);
     }
 }
