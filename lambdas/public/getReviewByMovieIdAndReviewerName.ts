@@ -36,7 +36,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event, context) => {    
                 headers: {
                     "content-type": "application/json",
                 },
-                body: JSON.stringify({Message: "Invalid movie Id"}),
+                body: JSON.stringify({Message: "Invalid or wrong movie Id and reviewer name."}),
             };
         }
 
@@ -47,7 +47,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event, context) => {    
                 "content-type": "application/json",
             },
             body: JSON.stringify({
-                message: "Get a specific movie by movie id and reviewer name successfully",
+                message: "Get a specific movie review by movie id and reviewer name successfully.",
                 data: movieReviewCommandOutput.Item,
             }),
         };

@@ -18,7 +18,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event, context) => {
                 headers: {
                     "content-type": "application/json",
                 },
-                body: JSON.stringify({Message: "Missing movie Id"}),
+                body: JSON.stringify({Message: "Missing movie Id."}),
             };
         }
 
@@ -40,12 +40,12 @@ export const handler: APIGatewayProxyHandlerV2 = async (event, context) => {
                 headers: {
                     "content-type": "application/json",
                 },
-                body: JSON.stringify({Message: "Invalid movie Id"}),
+                body: JSON.stringify({Message: "Invalid or wrong movie Id."}),
             };
         }
 
         const responseBody = {
-            message: "Get all reviews of a specific movie successfully",
+            message: "Get all reviews of a specific movie successfully.",
             data: getAllReviewsOfOneMovieCommandOutput.Items
         }
 
@@ -56,11 +56,12 @@ export const handler: APIGatewayProxyHandlerV2 = async (event, context) => {
                     headers: {
                         "content-type": "application/json",
                     },
-                    body: JSON.stringify({Message: "Invalid minRating. Must be between 0 and 4"}),
+                    body: JSON.stringify({Message: "Invalid minRating. Must be between 0 and 4."}),
                 };
             }
             // @ts-ignore
             responseBody.data = responseBody.data.filter((review) => review.Rating > minRating);
+            responseBody.message = "Get all reviews of a specific movie successfully with greater than minRating.";
         }
 
         return {
