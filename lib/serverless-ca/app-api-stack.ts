@@ -30,6 +30,12 @@ export class AppApiStack extends cdk.Stack {
             tableName: "MovieReviews",
         });
 
+        // Add the global secondary index
+        movieReviewsTable.addGlobalSecondaryIndex({
+            indexName: "ReviewerNameIndex",
+            partitionKey: {name: "ReviewerName", type: dynamodb.AttributeType.STRING},
+        });
+
         // Add the local secondary index
         movieReviewsTable.addLocalSecondaryIndex({
             indexName: "ReviewDateIndex",
@@ -140,6 +146,7 @@ export class AppApiStack extends cdk.Stack {
         // Add the public routes
         const publicApiRootRes = appApi.root.addResource("public");
         const moviesEndpoint = publicApiRootRes.addResource("movies");
+        const reviewsEndpoint = publicApiRootRes.addResource("reviews");
 
         // GET /movies/{movieId}/reviews  and  GET /movies/{movieId}/reviews?minRating=n
         const getReviewsByMovieIdEndpoint = moviesEndpoint.addResource("{movieId}").addResource("reviews");
@@ -167,5 +174,14 @@ export class AppApiStack extends cdk.Stack {
         });
         getReviewsByMovieIdAndYearEndpoint.addMethod("GET", new apig.LambdaIntegration(getReviewsByMovieIdAndYearFn));
         movieReviewsTable.grantReadData(getReviewsByMovieIdAndYearFn);
+
+        // GET /reviews/{reviewerName}
+        const getReviewsByReviewerNameEndpoint = reviewsEndpoint.addResource("{reviewerName}");
+        const getReviewsByReviewerNameFn = new node.NodejsFunction(this, "GetReviewsByReviewerNameFn", {
+            ...appCommonFnProps,
+            entry: "./lambdas/public/getReviewsByReviewerName.ts",
+        });
+        getReviewsByReviewerNameEndpoint.addMethod("GET", new apig.LambdaIntegration(getReviewsByReviewerNameFn));
+        movieReviewsTable.grantReadData(getReviewsByReviewerNameFn);
     }
 }
