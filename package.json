@@ -10,7 +10,7 @@
     "schema": "typescript-json-schema --noExtraProps --required --refs false -o ./shared/types.schema.json  \"./shared/types.d.ts\" \"*\"",
     "cdk": "cdk",
     "cdk-deploy-all": "cdk deploy --all",
-    "cdk-destroy-all": "cdk destroy InitConfigStack/AppApiStack --force && cdk destroy InitConfigStack/AuthApiStack --force && cdk destroy InitConfigStack --force"
+    "cdk-destroy-all": "cdk destroy AppApiStack --force && cdk destroy AuthApiStack --force && cdk destroy InitConfigStack --force"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.93",
