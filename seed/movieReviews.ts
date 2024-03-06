@@ -11,7 +11,7 @@ export const movieReviews : MovieReview[] = [
     {
         "MovieId": 58214,
         "ReviewerName": "Samantha",
-        "ReviewDate": "2023-07-22",
+        "ReviewDate": "2023-06-15",
         "Content": "Expected more from the storyline. It felt a bit predictable at times.",
         "Rating": 3
     },
@@ -53,7 +53,7 @@ export const movieReviews : MovieReview[] = [
     {
         "MovieId": 98453,
         "ReviewerName": "Jacob",
-        "ReviewDate": "2024-01-28",
+        "ReviewDate": "2023-12-03",
         "Content": "The storyline was intriguing, but the ending left me wanting more. Felt a bit rushed.",
         "Rating": 3
     },
@@ -81,14 +81,14 @@ export const movieReviews : MovieReview[] = [
     {
         "MovieId": 27146,
         "ReviewerName": "Mason",
-        "ReviewDate": "2022-09-01",
+        "ReviewDate": "2024-02-10",
         "Content": "Too many plot holes and loose ends. It was hard to stay interested.",
         "Rating": 2
     },
     {
         "MovieId": 44335,
         "ReviewerName": "Abigail",
-        "ReviewDate": "2023-12-14",
+        "ReviewDate": "2024-02-10",
         "Content": "Too many plot holes and loose ends. It was hard to stay interested.",
         "Rating": 2
     },
@@ -144,7 +144,7 @@ export const movieReviews : MovieReview[] = [
     {
         "MovieId": 92475,
         "ReviewerName": "Grace",
-        "ReviewDate": "2024-02-20",
+        "ReviewDate": "2023-03-15",
         "Content": "While the visuals were stunning, the narrative felt disjointed. It was hard to follow the storyline.",
         "Rating": 2
     },

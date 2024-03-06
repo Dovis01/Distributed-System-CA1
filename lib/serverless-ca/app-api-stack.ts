@@ -141,7 +141,7 @@ export class AppApiStack extends cdk.Stack {
         const publicApiRootRes = appApi.root.addResource("public");
         const moviesEndpoint = publicApiRootRes.addResource("movies");
 
-        // This is the get all reviews of a specific movie route
+        // GET /movies/{movieId}/reviews  and  GET /movies/{movieId}/reviews?minRating=n
         const getReviewsByMovieIdEndpoint = moviesEndpoint.addResource("{movieId}").addResource("reviews");
         const getReviewsByMovieIdFn = new node.NodejsFunction(this, "GetReviewsByMovieIdFn", {
             ...appCommonFnProps,
@@ -150,7 +150,7 @@ export class AppApiStack extends cdk.Stack {
         getReviewsByMovieIdEndpoint.addMethod("GET", new apig.LambdaIntegration(getReviewsByMovieIdFn));
         movieReviewsTable.grantReadData(getReviewsByMovieIdFn);
 
-        // This is the get review by movie id and reviewer name route
+        // GET /movies/{movieId}/reviews/{reviewerName}
         const getReviewByMovieIdAndReviewerNameEndpoint = getReviewsByMovieIdEndpoint.addResource("{reviewerName}");
         const getReviewByMovieIdAndReviewerNameFn = new node.NodejsFunction(this, "GetReviewByMovieIdAndReviewerNameFn", {
             ...appCommonFnProps,
@@ -158,5 +158,14 @@ export class AppApiStack extends cdk.Stack {
         });
         getReviewByMovieIdAndReviewerNameEndpoint.addMethod("GET", new apig.LambdaIntegration(getReviewByMovieIdAndReviewerNameFn));
         movieReviewsTable.grantReadData(getReviewByMovieIdAndReviewerNameFn);
+
+        // GET /movies/{movieId}/reviews/year/{year}
+        const getReviewsByMovieIdAndYearEndpoint = getReviewsByMovieIdEndpoint.addResource("year").addResource("{year}");
+        const getReviewsByMovieIdAndYearFn = new node.NodejsFunction(this, "GetReviewsByMovieIdAndYearFn", {
+            ...appCommonFnProps,
+            entry: "./lambdas/public/getReviewsByMovieIdAndYear.ts",
+        });
+        getReviewsByMovieIdAndYearEndpoint.addMethod("GET", new apig.LambdaIntegration(getReviewsByMovieIdAndYearFn));
+        movieReviewsTable.grantReadData(getReviewsByMovieIdAndYearFn);
     }
 }
