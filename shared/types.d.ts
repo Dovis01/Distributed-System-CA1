@@ -6,6 +6,10 @@ export type MovieReview = {
     Rating: number;
 }
 
+export type UpdateReviewText = {
+    Content: string;
+}
+
 export type SignUpBody = {
     username: string;
     password: string;
