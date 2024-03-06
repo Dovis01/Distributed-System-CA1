@@ -40,7 +40,6 @@ export const handler: APIGatewayProxyHandlerV2 = async (event, context) => {
         const checkTheSameReviewerNameCommandOutput = await dynamoDbDocClient.send(
             new QueryCommand({
                 TableName: process.env.TABLE_NAME,
-                IndexName: "ReviewerNameIndex",
                 KeyConditionExpression: "MovieId = :movieId AND ReviewerName = :reviewerName",
                 ExpressionAttributeValues: {
                     ":movieId": body.MovieId,

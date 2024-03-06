@@ -25,15 +25,15 @@ export class AppApiStack extends cdk.Stack {
         const movieReviewsTable = new dynamodb.Table(this, "MovieReviewsTable", {
             billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
             partitionKey: {name: "MovieId", type: dynamodb.AttributeType.NUMBER},
-            sortKey: {name: "ReviewDate", type: dynamodb.AttributeType.STRING},
+            sortKey: {name: "ReviewerName", type: dynamodb.AttributeType.STRING},
             removalPolicy: cdk.RemovalPolicy.DESTROY,
             tableName: "MovieReviews",
         });
 
         // Add the local secondary index
         movieReviewsTable.addLocalSecondaryIndex({
-            indexName: "ReviewerNameIndex",
-            sortKey: { name: "ReviewerName", type: dynamodb.AttributeType.STRING },
+            indexName: "ReviewDateIndex",
+            sortKey: { name: "ReviewDate", type: dynamodb.AttributeType.STRING },
         })
 
         // Create the custom resource to initialize the data in batch
@@ -107,7 +107,7 @@ export class AppApiStack extends cdk.Stack {
         const addReviewEndpoint = protectedApiRootRes.addResource("reviews");
 
         // This is the update movie review text route
-        const updateReviewTextEndpoint = protectedApiRootRes.addResource("{movieId}").addResource("reviews").addResource("{reviewName}");
+        const updateReviewTextEndpoint = protectedApiRootRes.addResource("{movieId}").addResource("reviews").addResource("{reviewerName}");
 
         // Add the protected lambda functions
         const addOneMovieReviewFn = new node.NodejsFunction(this, "AddOneMovieReview", {
