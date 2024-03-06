@@ -10,6 +10,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event, context) => {
         console.log("Event: ", event);
         const parameters = event?.pathParameters;
         const movieId = parameters?.movieId ? parseInt(parameters.movieId) : undefined;
+        const minRating = event?.queryStringParameters?.minRating ? parseInt(event.queryStringParameters.minRating) : undefined;
 
         if (!movieId) {
             return {
@@ -43,15 +44,31 @@ export const handler: APIGatewayProxyHandlerV2 = async (event, context) => {
             };
         }
 
+        const responseBody = {
+            message: "Get all reviews of a specific movie successfully",
+            data: getAllReviewsOfOneMovieCommandOutput.Items
+        }
+
+        if(minRating) {
+            if(minRating < 0 || minRating > 4) {
+                return {
+                    statusCode: 400,
+                    headers: {
+                        "content-type": "application/json",
+                    },
+                    body: JSON.stringify({Message: "Invalid minRating. Must be between 0 and 4"}),
+                };
+            }
+            // @ts-ignore
+            responseBody.data = responseBody.data.filter((review) => review.Rating > minRating);
+        }
+
         return {
             statusCode: 200,
             headers: {
                 "content-type": "application/json",
             },
-            body: JSON.stringify({
-                message: "Get all reviews of a specific movie successfully",
-                data: getAllReviewsOfOneMovieCommandOutput.Items
-            }),
+            body: JSON.stringify(responseBody),
         };
 
     } catch (error: any) {
