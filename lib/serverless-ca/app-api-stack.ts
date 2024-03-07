@@ -1,4 +1,5 @@
 import * as cdk from 'aws-cdk-lib';
+import { aws_iam as iam } from 'aws-cdk-lib';
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import * as custom from "aws-cdk-lib/custom-resources";
 import {generateBatch} from "../../shared/util";
@@ -90,6 +91,8 @@ export class AppApiStack extends cdk.Stack {
                 REGION: cdk.Aws.REGION,
             },
         };
+
+
 
         // Add the request authorizer configuration function
         const authorizerFn = new node.NodejsFunction(this, "AuthorizerFn", {
@@ -183,5 +186,32 @@ export class AppApiStack extends cdk.Stack {
         });
         getReviewsByReviewerNameEndpoint.addMethod("GET", new apig.LambdaIntegration(getReviewsByReviewerNameFn));
         movieReviewsTable.grantReadData(getReviewsByReviewerNameFn);
+
+
+        // Add the translation and language detection permission policies
+        const lambdaExecutionRole = new iam.Role(this, 'LambdaExecutionRole', {
+            assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
+            description: 'Role for Lambda that integrates with DetectDominantLanguage and Translate',
+        });
+
+        lambdaExecutionRole.addToPolicy(new iam.PolicyStatement({
+            actions: ['translate:TranslateText'],
+            resources: ['*'],
+        }));
+
+        lambdaExecutionRole.addToPolicy(new iam.PolicyStatement({
+            actions: ['comprehend:DetectDominantLanguage'],
+            resources: ['*'],
+        }));
+
+        // GET /reviews/{reviewerName}/{movieId}/translation?language=code
+        const getSpecificReviewTranslationEndpoint = getReviewsByReviewerNameEndpoint.addResource("{movieId}").addResource("translation");
+        const getSpecificReviewTranslationFn = new node.NodejsFunction(this, "GetSpecificReviewTranslationFn", {
+            ...appCommonFnProps,
+            entry: "./lambdas/public/getSpecificReviewTranslation.ts",
+            role: lambdaExecutionRole,
+        });
+        getSpecificReviewTranslationEndpoint.addMethod("GET", new apig.LambdaIntegration(getSpecificReviewTranslationFn));
+        movieReviewsTable.grantReadData(getSpecificReviewTranslationFn);
     }
 }

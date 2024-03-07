@@ -13,6 +13,7 @@
     "cdk-destroy-all": "cdk destroy AppApiStack --force && cdk destroy AuthApiStack --force && cdk destroy InitConfigStack --force"
   },
   "devDependencies": {
+    "@aws-sdk/client-translate": "^3.525.0",
     "@types/aws-lambda": "^8.10.93",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/jwk-to-pem": "^2.0.3",
