@@ -160,23 +160,15 @@ export class AppApiStack extends cdk.Stack {
         getReviewsByMovieIdEndpoint.addMethod("GET", new apig.LambdaIntegration(getReviewsByMovieIdFn));
         movieReviewsTable.grantReadData(getReviewsByMovieIdFn);
 
-        // GET /movies/{movieId}/reviews/{reviewerName}
-        const getReviewByMovieIdAndReviewerNameEndpoint = getReviewsByMovieIdEndpoint.addResource("{reviewerName}");
-        const getReviewByMovieIdAndReviewerNameFn = new node.NodejsFunction(this, "GetReviewByMovieIdAndReviewerNameFn", {
+        // GET /movies/{movieId}/reviews/{parameter}
+        // GET /movies/{movieId}/reviews/{reviewerName}  and  GET /movies/{movieId}/reviews/{year}
+        const getReviewByIdAndParamsEndpoint = getReviewsByMovieIdEndpoint.addResource("{parameter}");
+        const getReviewByIdAndParamsFn = new node.NodejsFunction(this, "GetReviewByIdAndParamsFn", {
             ...appCommonFnProps,
-            entry: "./lambdas/public/getReviewByMovieIdAndReviewerName.ts",
+            entry: "./lambdas/public/getReviewByIdAndParams.ts",
         });
-        getReviewByMovieIdAndReviewerNameEndpoint.addMethod("GET", new apig.LambdaIntegration(getReviewByMovieIdAndReviewerNameFn));
-        movieReviewsTable.grantReadData(getReviewByMovieIdAndReviewerNameFn);
-
-        // GET /movies/{movieId}/reviews/year/{year}
-        const getReviewsByMovieIdAndYearEndpoint = getReviewsByMovieIdEndpoint.addResource("year").addResource("{year}");
-        const getReviewsByMovieIdAndYearFn = new node.NodejsFunction(this, "GetReviewsByMovieIdAndYearFn", {
-            ...appCommonFnProps,
-            entry: "./lambdas/public/getReviewsByMovieIdAndYear.ts",
-        });
-        getReviewsByMovieIdAndYearEndpoint.addMethod("GET", new apig.LambdaIntegration(getReviewsByMovieIdAndYearFn));
-        movieReviewsTable.grantReadData(getReviewsByMovieIdAndYearFn);
+        getReviewByIdAndParamsEndpoint.addMethod("GET", new apig.LambdaIntegration(getReviewByIdAndParamsFn));
+        movieReviewsTable.grantReadData(getReviewByIdAndParamsFn);
 
         // GET /reviews/{reviewerName}
         const getReviewsByReviewerNameEndpoint = reviewsEndpoint.addResource("{reviewerName}");
