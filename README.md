@@ -77,6 +77,10 @@ This repository contains an implementation of a serverless REST API for the AWS 
 
 ![](./images/AuthSignIn.jpg)
 
+- SignOut:
+
+![](./images/SignOut.jpg)
+
 ### Independent learning 
 
 ###### 1. Multi-stack app:
