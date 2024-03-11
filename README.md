@@ -120,7 +120,7 @@ new AppApiStack(app, 'AppApiStack', {
 
 ![](./images/MultiStacks.jpg)
 
-###### 2. Lamdbd layers:
+###### 2. Lambda layers:
 
 For the AWS application infrastructure, I also add the lambda layers to store the common node packages for all lambda functions.   Eg: `ajv` package
 
